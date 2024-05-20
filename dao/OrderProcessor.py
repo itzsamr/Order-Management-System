@@ -174,4 +174,21 @@ class OrderProcessor(IOrderManagementRepository):
                 connection.close()
 
     def getOrderByUser(self, user):
-        pass
+        try:
+            connection = DBConnUtil.getDBConn()
+            if connection:
+                cursor = connection.cursor()
+                cursor.execute(
+                    "SELECT * FROM [Order] WHERE userId = ?", user.getUserId()
+                )
+                order = cursor.fetchall()
+                return order
+            else:
+                print("Failed to connect to database.")
+                return []
+        except Exception as e:
+            print("Error retrieving order:", e)
+            return []
+        finally:
+            if connection:
+                connection.close()

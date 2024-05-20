@@ -72,6 +72,16 @@ class OrderManagement:
         else:
             print("No products found.")
 
+    def get_orders_by_user(self):
+        userId = int(input("Enter User ID: "))
+        orders = self.orderProcessor.getOrderByUser(User(userId, None, None, None))
+        if orders:
+            print(f"All Orders for User ID {userId}:")
+            for order in orders:
+                print(order)
+        else:
+            print(f"No orders found for User ID {userId}.")
+
     def main(self):
         while True:
             self.display_menu()
