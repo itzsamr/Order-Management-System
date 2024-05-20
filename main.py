@@ -51,6 +51,18 @@ class OrderManagement:
         user = User(userId, None, None, None)
         self.orderProcessor.createOrder(user, products)
 
+    def cancel_order(self):
+        userId = int(input("Enter User ID: "))
+        orderId = int(input("Enter Order ID: "))
+        try:
+            self.orderProcessor.cancelOrder(userId, orderId)
+        except UserNotFound as e:
+            print("User not found:", e)
+        except OrderNotFound as e:
+            print("Order not found:", e)
+        except Exception as e:
+            print("An error occurred:", e)
+
     def main(self):
         while True:
             self.display_menu()

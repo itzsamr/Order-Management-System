@@ -51,7 +51,44 @@ class OrderProcessor(IOrderManagementRepository):
                 connection.close()
 
     def cancelOrder(self, userId, orderId):
-        pass
+        try:
+            connection = DBConnUtil.getDBConn()
+            if connection:
+                cursor = connection.cursor()
+                cursor.execute("SELECT COUNT(*) FROM Users WHERE userId = ?", userId)
+                user_count = cursor.fetchone()[0]
+                if user_count == 0:
+                    raise UserNotFound(f"User with ID {userId} not found.")
+
+                cursor.execute(
+                    "SELECT COUNT(*) FROM [Order] WHERE userId = ? AND orderId = ?",
+                    userId,
+                    orderId,
+                )
+                order_count = cursor.fetchone()[0]
+                if order_count == 0:
+                    raise OrderNotFound(
+                        f"Order with ID {orderId} not found for user {userId}."
+                    )
+                cursor.execute("DELETE FROM [OrderProduct] WHERE orderId = ?", orderId)
+                cursor.execute(
+                    "DELETE FROM [Order] WHERE userId = ? AND orderId = ?",
+                    userId,
+                    orderId,
+                )
+                connection.commit()
+                print("Order cancelled successfully.")
+            else:
+                print("Failed to connect to database.")
+        except UserNotFound as e:
+            print("Error cancelling order:", e)
+        except OrderNotFound as e:
+            print("Error cancelling order:", e)
+        except Exception as e:
+            print("Error cancelling order:", e)
+        finally:
+            if connection:
+                connection.close()
 
     def createProduct(self, user, product):
         try:
