@@ -9,7 +9,7 @@ class OrderManagement:
         self.orderProcessor = OrderProcessor()
 
     def display_menu(self):
-        print("\n===|Order Management System|===")
+        print("\nOrder Management System")
         print("1. Create User")
         print("2. Create Product")
         print("3. Create Order")
