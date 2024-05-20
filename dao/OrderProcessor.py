@@ -13,7 +13,40 @@ class OrderProcessor(IOrderManagementRepository):
         pass
 
     def createProduct(self, user, product):
-        pass
+        try:
+            connection = DBConnUtil.getDBConn()
+            if connection:
+                cursor = connection.cursor()
+                cursor.execute("SELECT * FROM Users WHERE userId = ?", user.getUserId())
+                user_data = cursor.fetchone()
+                if user_data:
+                    user = User(user_data[0], user_data[1], user_data[2], user_data[3])
+                    if user.getRole() != "Admin":
+                        print("Error: User is not an admin.")
+                        return
+
+                    cursor.execute(
+                        "INSERT INTO Products (productId, productName, description, price, quantityInStock, type) VALUES (?, ?, ?, ?,?,?)",
+                        product.getProductId(),
+                        product.getProductName(),
+                        product.getDescription(),
+                        product.getPrice(),
+                        product.getQuantityInStock(),
+                        product.getType(),
+                    ),
+                    connection.commit()
+                    print("Product created successfully.")
+                else:
+                    print("User not found.")
+                    return None
+            else:
+                print("Failed to connect to database.")
+
+        except Exception as e:
+            print("Error creating product:", e)
+        finally:
+            if connection:
+                connection.close()
 
     def createUser(self, user):
         try:

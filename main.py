@@ -26,6 +26,20 @@ class OrderManagement:
         user = User(userId, username, password, role)
         self.orderProcessor.createUser(user)
 
+    def create_product(self):
+        user_id = int(input("Enter User ID: "))
+        user = User(user_id, None, None, None)
+        product_id = int(input("Enter Product ID: "))
+        productName = input("Enter Product Name: ")
+        description = input("Enter Product Description: ")
+        price = float(input("Enter Product Price: "))
+        Quantity = int(input("Enter Product Quantity: "))
+        productType = input("Enter Product Type (Electronics/Clothing): ")
+        product = Product(
+            product_id, productName, description, price, Quantity, productType
+        )
+        self.orderProcessor.createProduct(user, product)
+
     def main(self):
         while True:
             self.display_menu()
