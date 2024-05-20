@@ -40,6 +40,17 @@ class OrderManagement:
         )
         self.orderProcessor.createProduct(user, product)
 
+    def create_order(self):
+        userId = int(input("Enter User ID: "))
+        products = []
+        while True:
+            productId = int(input("Enter Product ID (0 to finish): "))
+            if productId == 0:
+                break
+            products.append(Product(productId, None, None, None, None, None))
+        user = User(userId, None, None, None)
+        self.orderProcessor.createOrder(user, products)
+
     def main(self):
         while True:
             self.display_menu()

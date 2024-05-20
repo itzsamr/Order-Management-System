@@ -7,7 +7,48 @@ from entity.User import User
 
 class OrderProcessor(IOrderManagementRepository):
     def createOrder(self, user, products):
-        pass
+        try:
+            connection = DBConnUtil.getDBConn()
+            if connection:
+                cursor = connection.cursor()
+                cursor.execute(
+                    "SELECT COUNT(*) FROM Users WHERE userId = ?", user.getUserId()
+                )
+                user_count = cursor.fetchone()[0]
+                if user_count == 0:
+                    cursor.execute(
+                        "INSERT INTO Users (userId, username, password, role) VALUES (?, ?, ?, ?)",
+                        user.getUserId(),
+                        user.getUsername(),
+                        user.getPassword(),
+                        user.getRole(),
+                    )
+                    connection.commit()
+                    print("User created successfully.")
+
+                cursor.execute(
+                    "INSERT INTO [Order] ( UserId) OUTPUT INSERTED.OrderId VALUES (?)",
+                    user.getUserId(),
+                )
+
+                order_id = cursor.fetchone()[0]
+                print(order_id)
+                order_product_data = [
+                    (order_id, product.getProductId()) for product in products
+                ]
+                cursor.executemany(
+                    "INSERT INTO OrderProduct (OrderId, ProductId) VALUES (?, ?)",
+                    order_product_data,
+                )
+                connection.commit()
+                print("Order created successfully.")
+            else:
+                print("Failed to connect to database.")
+        except Exception as e:
+            print("Error creating order:", e)
+        finally:
+            if connection:
+                connection.close()
 
     def cancelOrder(self, userId, orderId):
         pass
