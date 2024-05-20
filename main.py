@@ -63,6 +63,15 @@ class OrderManagement:
         except Exception as e:
             print("An error occurred:", e)
 
+    def get_all_products(self):
+        products = self.orderProcessor.getAllProducts()
+        if products:
+            print("All Products:")
+            for product in products:
+                print(product)
+        else:
+            print("No products found.")
+
     def main(self):
         while True:
             self.display_menu()

@@ -156,7 +156,22 @@ class OrderProcessor(IOrderManagementRepository):
                 connection.close()
 
     def getAllProducts(self):
-        pass
+        try:
+            connection = DBConnUtil.getDBConn()
+            if connection:
+                cursor = connection.cursor()
+                cursor.execute("SELECT * FROM Products")
+                products = cursor.fetchall()
+                return products
+            else:
+                print("Failed to connect to database.")
+                return []
+        except Exception as e:
+            print("Error retrieving products:", e)
+            return []
+        finally:
+            if connection:
+                connection.close()
 
     def getOrderByUser(self, user):
         pass
