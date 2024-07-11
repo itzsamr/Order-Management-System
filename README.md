@@ -30,7 +30,7 @@ The `Order Management` system is a Python-based application for managing users, 
 2. **Set up the Python environment** (optional but recommended):
     ```bash
     python -m venv venv
-    # On Windows use `venv\Scripts\activate`
+    venv\Scripts\activate
     ```
 
 3. **Install dependencies**:
